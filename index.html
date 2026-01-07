@@ -552,12 +552,15 @@
 
         // 创建球的构造函数
         class Ball {
-            constructor(x, y, radius, color, speedX = 0, speedY = 0) { // 默认速度为0
+            constructor(x, y, radius, color, speedX = 0, speedY = 0) {
                 this.x = x || Math.random() * (canvas.width - 80) + 40;
                 this.y = y || Math.random() * (canvas.height - 80) + 40;
-                this.radius = radius || ballSize/3 + Math.random() * ballSize/1.5;
+                // --- 修改：直接使用全局的ballSize作为半径，移除随机性 ---
+                this.radius = radius !== undefined ? radius : ballSize;
+                // --- 修改结束 ---
                 this.color = color || colors[Math.floor(Math.random() * colors.length)];
-                this.mass = Math.PI * this.radius * this.radius; // 质量与面积成正比
+                // --- 修改：质量现在与固定的半径平方成正比 ---
+                this.mass = Math.PI * this.radius * this.radius;
 
                 // 使用传入的速度
                 this.dx = speedX;
@@ -1236,7 +1239,9 @@
                     const newBall = new Ball(
                         clickX, // x
                         clickY, // y
-                        ballSize/3 + Math.random() * ballSize/1.5, // radius
+                        // --- 修改：直接使用全局的ballSize作为半径 ---
+                        undefined, // radius (传入undefined，让构造函数使用全局ballSize)
+                        // --- 修改结束 ---
                         document.getElementById('colorPicker').value, // 使用颜色选择器的颜色
                         dx, // speedX
                         dy  // speedY
