@@ -7,169 +7,173 @@
     <style>
         body {
             margin: 0;
-            padding: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background: #1a1a1a;
+            color: #fff;
+            overflow: hidden;
+        }
+        #game-container {
+            position: relative;
+            width: 100%;
+            height: calc(100vh - 120px);
+            background: #222;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+        .ball {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #ff9, #f90);
+            box-shadow: 0 0 10px rgba(255, 255, 0, 0.7);
+            cursor: pointer;
+        }
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 10px 0;
+            padding: 10px;
+            background: #333;
+            border-radius: 8px;
+        }
+        .control-group {
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-            color: white;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            overflow-x: hidden;
-            position: relative;
+            min-width: 120px;
         }
-        
-        /* 添加星空背景效果 */
-        body::before {
-            content: "";
+        button {
+            background: #4a4a4a;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 2px;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #5a5a5a;
+        }
+        button:active {
+            background: #3a3a3a;
+        }
+        .active {
+            background: #007bff !important;
+        }
+        .info-bar {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            font-size: 14px;
+            color: #ccc;
+        }
+        .stat {
+            display: inline-block;
+            margin: 0 5px;
+        }
+        .mode-indicator {
+            background: #3a3a7f;
+            padding: 3px 8px;
+            border-radius: 4px;
+        }
+        #start-screen {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: 
-                radial-gradient(white, rgba(255,255,255,.2) 1px, transparent 1px),
-                radial-gradient(white, rgba(255,255,255,.15) 2px, transparent 1px);
-            background-size: 50px 50px, 70px 70px;
-            opacity: 0.2;
-            z-index: -1;
-        }
-        
-        .game-container {
-            position: relative;
-            border: 3px solid #5d5dff;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7),
-                        inset 0 0 20px rgba(93, 93, 255, 0.3);
-            background: rgba(15, 30, 39, 0.85);
-            backdrop-filter: blur(5px);
-            overflow: hidden;
-        }
-        canvas {
-            display: block;
-            border-radius: 12px;
-            background: rgba(10, 20, 30, 0.7);
-            box-shadow: inset 0 0 15px rgba(93, 93, 255, 0.5);
-        }
-        .title {
-            position: absolute;
-            top: -50px;
-            left: 50%;
-            transform: translateX(-50%);
-            color: white;
-            font-size: 28px;
-            font-weight: bold;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.7),
-                         0 0 20px rgba(93, 93, 255, 0.8);
-            letter-spacing: 1px;
-            animation: pulse 2s infinite;
-        }
-        @keyframes pulse {
-            0% { text-shadow: 0 0 10px rgba(255, 255, 255, 0.7), 0 0 20px rgba(93, 93, 255, 0.5); }
-            50% { text-shadow: 0 0 15px rgba(255, 255, 255, 1), 0 0 30px rgba(93, 93, 255, 0.9); }
-            100% { text-shadow: 0 0 10px rgba(255, 255, 255, 0.7), 0 0 20px rgba(93, 93, 255, 0.5); }
-        }
-        .controls {
-            margin: 25px 0 15px;
+            background: rgba(0, 0, 0, 0.85);
             display: flex;
-            flex-wrap: wrap;
+            flex-direction: column;
             justify-content: center;
-            gap: 12px;
+            align-items: center;
+            z-index: 100;
         }
-        button {
-            background: linear-gradient(to bottom, #5d5dff, #3d3dbd);
+        #start-button {
+            background: #4CAF50;
             color: white;
             border: none;
-            padding: 12px 24px;
+            padding: 15px 40px;
+            font-size: 24px;
             border-radius: 50px;
             cursor: pointer;
-            font-size: 16px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            margin-top: 20px;
+            transition: all 0.3s;
+            box-shadow: 0 0 20px rgba(76, 175, 80, 0.5);
         }
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
-            background: linear-gradient(to bottom, #3d3dbd, #2d2d8d);
+        #start-button:hover {
+            background: #45a049;
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(76, 175, 80, 0.7);
         }
-        button:active {
-            transform: translateY(1px);
+        #game-title {
+            font-size: 48px;
+            color: #ffcc00;
+            text-shadow: 0 0 10px rgba(255, 204, 0, 0.8);
+            margin-bottom: 20px;
         }
-        button:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-            background: #95a5a6;
+        #subtitle {
+            font-size: 20px;
+            color: #aaa;
+            margin-bottom: 40px;
         }
-        button i {
-            font-size: 18px;
-        }
-        .info {
-            color: rgba(255, 255, 255, 0.85);
-            font-size: 16px;
-            margin: 15px 0 10px;
+        .instructions {
             text-align: center;
+            color: #ccc;
             max-width: 600px;
+            margin: 20px auto;
             line-height: 1.5;
-            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
         }
-        .stats {
-            display: flex;
-            justify-content: space-around;
-            width: 600px;
-            margin: 10px 0;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 10px;
-            padding: 8px;
-            font-size: 14px;
-            flex-wrap: wrap;
-        }
-        .stat-item {
+        .footer {
             text-align: center;
-            min-width: 120px;
+            margin-top: 10px;
+            font-size: 12px;
+            color: #666;
+        }
+        .score-multiplier {
+            color: #ffcc00;
+            font-weight: bold;
+        }
+        .combo-display {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 24px;
+            color: #ff5555;
+            text-shadow: 0 0 10px rgba(255, 85, 85, 0.8);
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 10;
+        }
+        input[type="range"] {
+            width: 100%;
             margin: 5px 0;
         }
-        .score-display {
-            font-size: 28px;
-            font-weight: bold;
-            color: #FFD700;
-            text-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
-            margin: 10px 0;
-            text-align: center;
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
-        .high-score {
-            font-size: 16px;
-            color: #FFA500;
-            margin-top: 5px;
+        .slider-value {
+            min-width: 40px;
+            text-align: right;
         }
-        @media (max-width: 650px) {
-            .controls {
-                flex-direction: column;
-                align-items: center;
-            }
-            .stats {
-                flex-direction: column;
-                gap: 5px;
-                width: 90%;
-            }
-            .score-display {
-                font-size: 24px;
-            }
-            canvas {
-                width: 95vw;
-                height: 60vw;
-            }
-            .game-container {
-                width: 95vw;
-            }
-        }
-        .pause-overlay {
+        .customization-panel {
             position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(50, 50, 50, 0.9);
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+            z-index: 50;
+            display: none;
+        }
+        .modal-overlay {
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
@@ -178,1353 +182,751 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 10;
-            border-radius: 12px;
-            display: none;
-        }
-        .pause-text {
-            font-size: 48px;
-            color: white;
-            text-shadow: 0 0 20px #5d5dff;
-            animation: pulse 1.5s infinite;
-        }
-        .score-popup {
-            position: absolute;
-            color: #FFD700;
-            font-weight: bold;
-            font-size: 18px;
-            text-shadow: 0 0 5px rgba(255, 215, 0, 0.9);
-            pointer-events: none;
-            opacity: 1;
-            transition: opacity 0.5s;
-            animation: floatUp 1s forwards;
-        }
-        @keyframes floatUp {
-            0% {
-                transform: translateY(0);
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(-30px);
-                opacity: 0;
-            }
-        }
-        .game-instructions {
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 10px;
-            padding: 10px;
-            margin-top: 10px;
-            font-size: 14px;
-            max-width: 600px;
-        }
-        .instructions-title {
-            font-weight: bold;
-            color: #5d5dff;
-            margin-bottom: 5px;
-        }
-        .mode-selector {
-            display: flex;
-            justify-content: center;
-            margin: 15px 0;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-        .mode-btn {
-            background: rgba(93, 93, 255, 0.7);
-            padding: 8px 16px;
-            border-radius: 25px;
-            cursor: pointer;
-            transition: all 0.3s;
-            border: 2px solid transparent;
-        }
-        .mode-btn.active {
-            background: rgba(46, 204, 113, 0.9);
-            border-color: white;
-            transform: scale(1.05);
-            box-shadow: 0 0 15px rgba(46, 204, 113, 0.7);
-        }
-        .mode-btn:hover:not(.active) {
-            background: rgba(93, 93, 255, 0.9);
-        }
-        .slider-controls {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 15px;
-            margin: 15px 0;
-        }
-        .slider-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 10px;
-            background: rgba(0, 0, 0, 0.3);
-            padding: 10px;
-            border-radius: 10px;
-            min-width: 180px;
-        }
-        .slider-container label {
-            margin-bottom: 5px;
-            font-weight: bold;
-            color: #5d5dff;
-        }
-        .slider {
-            width: 100%;
-            margin: 5px 0;
-            height: 8px;
-            -webkit-appearance: none;
-            background: rgba(93, 93, 255, 0.3);
-            border-radius: 4px;
-            outline: none;
-        }
-        .slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: #5d5dff;
-            cursor: pointer;
-            box-shadow: 0 0 5px rgba(93, 93, 255, 0.8);
-        }
-        .slider-value {
-            text-align: center;
-            font-size: 14px;
-            color: #fff;
-            font-weight: bold;
-        }
-        .trail-effect {
-            position: absolute;
-            background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 5;
-            opacity: 0.7;
-        }
-        .speed-indicator {
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            background: rgba(0, 0, 0, 0.5);
-            color: #5d5dff;
-            padding: 5px 10px;
-            border-radius: 15px;
-            font-weight: bold;
-            font-size: 14px;
-            z-index: 5;
-        }
-        
-        /* 添加球选项模态框样式 */
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-        }
-        .modal.active {
-            opacity: 1;
-            pointer-events: all;
+            z-index: 1000;
         }
         .modal-content {
-            background: rgba(30, 40, 70, 0.95);
-            border-radius: 15px;
-            padding: 25px;
+            background: #333;
+            padding: 20px;
+            border-radius: 8px;
             width: 90%;
             max-width: 500px;
-            box-shadow: 0 10px 30px rgba(93, 93, 255, 0.5);
-            border: 2px solid #5d5dff;
-            transform: translateY(20px);
-            transition: transform 0.3s ease;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
         }
-        .modal.active .modal-content {
-            transform: translateY(0);
-        }
-        .modal-title {
-            text-align: center;
+        .close-modal {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: white;
             font-size: 24px;
-            margin-bottom: 20px;
-            color: #5d5dff;
-            text-shadow: 0 0 10px rgba(93, 93, 255, 0.7);
-        }
-        .ball-options {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        .option-group {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 15px;
-            border-radius: 10px;
-        }
-        .color-preview {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 10px;
-        }
-        .color-option {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            cursor: pointer;
-            border: 2px solid transparent;
-            transition: all 0.2s;
-        }
-        .color-option:hover {
-            transform: scale(1.1);
-        }
-        .color-option.selected {
-            border-color: white;
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
-        }
-        .modal-buttons {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 20px;
-        }
-        .modal-btn {
-            padding: 10px 25px;
-            border: none;
-            border-radius: 50px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-size: 16px;
-        }
-        .cancel-btn {
-            background: #e74c3c;
-            color: white;
-        }
-        .confirm-btn {
-            background: #2ecc71;
-            color: white;
-        }
-        .cancel-btn:hover {
-            background: #c0392b;
-            transform: translateY(-2px);
-        }
-        .confirm-btn:hover {
-            background: #27ae60;
-            transform: translateY(-2px);
-        }
-        .preset-colors {
-            display: flex;
-            gap: 8px;
-            margin-top: 10px;
-        }
-        .preset-color {
-            width: 24px;
-            height: 24px;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-        .preset-color:hover {
-            transform: scale(1.2);
-        }
-        .custom-color-picker {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 10px;
-        }
-        #customColorInput {
-            width: 60px;
-            height: 30px;
-            border: none;
-            border-radius: 5px;
             cursor: pointer;
         }
     </style>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <div class="container">
-        <div class="game-container">
-            <div class="title">增强物理碰撞球模拟器</div>
-            <canvas id="gameCanvas" width="600" height="400"></canvas>
-            <div class="pause-overlay" id="pauseOverlay">
-                <div class="pause-text">❚❚</div>
-            </div>
-            <div class="speed-indicator" id="speedIndicator">速度: 1.0x</div>
+    <h1>碰撞球小游戏增强物理碰撞球模拟器</h1>
+    
+    <div class="info-bar">
+        <div class="stat">速度: <span id="speed-display">1.0x</span></div>
+        <div class="stat">分数: <span id="score-display">0</span></div>
+        <div class="stat">历史最高: <span id="high-score-display">0</span></div>
+        <div class="stat">球数量: <span id="ball-count">3</span> /15</div>
+        <div class="stat">碰撞次数: <span id="collision-count">0</span></div>
+        <div class="stat">FPS: <span id="fps-display">0</span></div>
+        <div class="stat">连击: <span id="combo-display-stat">0</span> x</div>
+        <div class="stat">物理模式: <span class="mode-indicator" id="physics-mode">标准</span></div>
+    </div>
+    
+    <div class="controls">
+        <div class="control-group">
+            <button id="standard-mode" class="active">标准模式</button>
+            <button id="friction-mode">摩擦力模式</button>
+            <button id="gravity-mode">重力模式</button>
+            <button id="zero-gravity">零重力</button>
         </div>
-        
-        <div class="score-display">
-            分数: <span id="score">0</span>
-            <div class="high-score">历史最高: <span id="highScore">0</span></div>
+        <div class="control-group">
+            <button id="random-color">随机颜色</button>
+            <button id="add-ball">添加球</button>
+            <button id="clear-all">清除所有</button>
+            <button id="pause">暂停</button>
         </div>
-        
-        <div class="stats">
-            <div class="stat-item">球数量: <span id="ballCount">3</span>/15</div>
-            <div class="stat-item">碰撞次数: <span id="collisionCount">0</span></div>
-            <div class="stat-item">FPS: <span id="fps">0</span></div>
-            <div class="stat-item">连击: <span id="combo">0</span>x</div>
-            <div class="stat-item">物理模式: <span id="physicsMode">标准</span></div>
-        </div>
-        
-        <div class="mode-selector">
-            <div class="mode-btn active" data-mode="standard">标准模式</div>
-            <div class="mode-btn" data-mode="friction">摩擦力模式</div>
-            <div class="mode-btn" data-mode="gravity">重力模式</div>
-            <div class="mode-btn" data-mode="zero-g">零重力</div>
-        </div>
-        
-        <div class="controls">
-            <button id="changeColorBtn">
-                <i class="fas fa-palette"></i> 随机颜色
-            </button>
-            <button id="addBallBtn">
-                <i class="fas fa-plus-circle"></i> 添加球
-            </button>
-            <button id="clearBtn">
-                <i class="fas fa-broom"></i> 清除所有
-            </button>
-            <button id="pauseBtn">
-                <i class="fas fa-pause"></i> 暂停
-            </button>
-            <button id="resetSpeedBtn">
-                <i class="fas fa-sync-alt"></i> 重置速度
-            </button>
-        </div>
-        
-        <div class="slider-controls">
+        <div class="control-group">
+            <button id="reset-speed">重置速度</button>
             <div class="slider-container">
-                <label for="frictionRange">摩擦力系数</label>
-                <input type="range" id="frictionRange" class="slider" min="0" max="100" value="5">
-                <div class="slider-value">摩擦: <span id="frictionValue">0.05</span></div>
+                <label>摩擦力系数</label>
+                <div class="slider-value"><span id="friction-value">0.05</span></div>
             </div>
+            <input type="range" id="friction-slider" min="0" max="0.2" step="0.01" value="0.05">
             <div class="slider-container">
-                <label for="gravityRange">重力强度</label>
-                <input type="range" id="gravityRange" class="slider" min="0" max="20" value="10">
-                <div class="slider-value">重力: <span id="gravityValue">0.5</span></div>
+                <label>重力强度</label>
+                <div class="slider-value"><span id="gravity-value">0.5</span></div>
             </div>
+            <input type="range" id="gravity-slider" min="0" max="2" step="0.1" value="0.5">
             <div class="slider-container">
-                <label for="speedMultiplierRange">游戏速度倍率</label>
-                <input type="range" id="speedMultiplierRange" class="slider" min="1" max="100" value="50">
-                <div class="slider-value">速度: <span id="speedMultiplierValue">1.0</span>x</div>
+                <label>游戏速度倍率</label>
+                <div class="slider-value"><span id="speed-value">1.0</span> x</div>
             </div>
-        </div>
-        
-        <div class="info">
-            ⚛️ 物理特性：球体之间会真实碰撞，速度和角度遵循动量守恒定律<br>
-            🎚️ 提示：点击球体可单独改变其颜色，拖拽可自定义初速度
-        </div>
-        
-        <div class="game-instructions">
-            <div class="instructions-title">计分规则:</div>
-            <div>• 球与球碰撞: +10 分</div>
-            <div>• 球与边界碰撞: +1 分</div>
-            <div>• 连续碰撞(1秒内): 奖励额外分数</div>
-            <div>• 同时存在5个以上球: 双倍得分</div>
-            <div>• 重力/摩擦力模式: 额外得分加成</div>
+            <input type="range" id="speed-slider" min="0.2" max="3" step="0.1" value="1.0">
         </div>
     </div>
-
-    <!-- 添加球选项模态框 -->
-    <div class="modal" id="addBallModal">
-        <div class="modal-content">
-            <div class="modal-title">自定义新球参数</div>
-            <div class="ball-options">
-                <div class="option-group">
-                    <label for="ballSpeedRange">初始速度范围</label>
-                    <input type="range" id="ballSpeedRange" class="slider" min="1" max="15" value="6">
-                    <div class="slider-value">速度: <span id="ballSpeedValue">6</span></div>
-                </div>
-                <div class="option-group">
-                    <label for="ballSizeRange">球体大小</label>
-                    <input type="range" id="ballSizeRange" class="slider" min="10" max="50" value="25">
-                    <div class="slider-value">大小: <span id="ballSizeValue">25</span></div>
-                </div>
-                <div class="option-group">
-                    <label>球体颜色</label>
-                    <div class="preset-colors">
-                        <div class="preset-color" style="background-color: #FF6B6B;" data-color="#FF6B6B"></div>
-                        <div class="preset-color" style="background-color: #4ECDC4;" data-color="#4ECDC4"></div>
-                        <div class="preset-color" style="background-color: #45B7D1;" data-color="#45B7D1"></div>
-                        <div class="preset-color" style="background-color: #96CEB4;" data-color="#96CEB4"></div>
-                        <div class="preset-color" style="background-color: #FECA57;" data-color="#FECA57"></div>
-                        <div class="preset-color" style="background-color: #F368E0;" data-color="#F368E0"></div>
-                        <div class="preset-color" style="background-color: #54A0FF;" data-color="#54A0FF"></div>
-                        <div class="preset-color" style="background-color: #00D2D3;" data-color="#00D2D3"></div>
-                        <div class="preset-color" style="background-color: #A55EE7;" data-color="#A55EE7"></div>
-                        <div class="preset-color" style="background-color: #FF9F43;" data-color="#FF9F43"></div>
-                        <div class="preset-color" style="background-color: #1DD1A1;" data-color="#1DD1A1"></div>
-                        <div class="preset-color" style="background-color: #5F27CD;" data-color="#5F27CD"></div>
-                    </div>
-                    <div class="custom-color-picker">
-                        <span>自定义颜色:</span>
-                        <input type="color" id="customColorInput" value="#54A0FF">
-                        <button id="applyCustomColor" class="modal-btn confirm-btn">应用</button>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-buttons">
-                <button class="modal-btn cancel-btn" id="cancelAddBall">取消</button>
-                <button class="modal-btn confirm-btn" id="confirmAddBall">添加球</button>
+    
+    <div id="game-container">
+        <div id="start-screen">
+            <div id="game-title">碰撞球</div>
+            <div id="subtitle">增强物理模拟器</div>
+            <button id="start-button">开始游戏</button>
+            <div class="instructions">
+                ⚛️ 物理特性：球体之间会真实碰撞，速度和角度遵循动量守恒定律<br>
+                🎚️ 提示：点击球体可单独改变其颜色，拖拽可自定义初速度
             </div>
         </div>
+        <div class="combo-display" id="combo-text">连击 x3!</div>
+    </div>
+    
+    <div class="customization-panel" id="customization-panel">
+        <h3>自定义新球参数</h3>
+        <div class="slider-container">
+            <label>初始速度范围</label>
+            <div class="slider-value"><span id="new-ball-speed-value">6</span></div>
+        </div>
+        <input type="range" id="new-ball-speed" min="1" max="15" step="1" value="6">
+        <div class="slider-container">
+            <label>球体大小</label>
+            <div class="slider-value"><span id="new-ball-size-value">25</span></div>
+        </div>
+        <input type="range" id="new-ball-size" min="10" max="50" step="1" value="25">
+        <div>
+            <label>球体颜色</label>
+            <input type="color" id="new-ball-color" value="#ffcc00">
+        </div>
+        <div style="display: flex; gap: 10px; margin-top: 10px;">
+            <button id="apply-customization">应用</button>
+            <button id="cancel-customization">取消</button>
+        </div>
+    </div>
+    
+    <div class="instructions">
+        <h3>计分规则:</h3>
+        <ul>
+            <li>• 球与球碰撞: +10 分</li>
+            <li>• 球与边界碰撞: +1 分</li>
+            <li>• 连续碰撞(1秒内): 奖励额外分数</li>
+            <li>• 同时存在5个以上球: 双倍得分</li>
+            <li>• 重力/摩擦力模式: 额外得分加成</li>
+        </ul>
+    </div>
+    
+    <div class="footer">
+        © 2023 碰撞球小游戏 | 物理模拟器
     </div>
 
     <script>
-        // 获取canvas元素和上下文
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
-        const pauseOverlay = document.getElementById('pauseOverlay');
-        const speedIndicator = document.getElementById('speedIndicator');
-        const addBallModal = document.getElementById('addBallModal');
-        
-        // 游戏参数
-        const balls = [];
-        let collisionCounter = 0;
-        let lastTimestamp = 0;
-        let frameCount = 0;
-        let fps = 0;
-        let animationId;
-        let isPaused = false;
-        let mouseX = 0;
-        let mouseY = 0;
+        // 游戏状态变量
+        let gameStarted = false;
+        let gamePaused = false;
+        let balls = [];
         let score = 0;
-        let highScore = localStorage.getItem('collisionBallHighScore') || 0;
-        let comboCounter = 0;
+        let highScore = localStorage.getItem('highScore') || 0;
+        let collisionCount = 0;
         let lastCollisionTime = 0;
-        let scorePopups = [];
-        let isDragging = false;
-        let draggedBall = null;
-        let dragStartX = 0;
-        let dragStartY = 0;
+        let comboCount = 0;
+        let physicsMode = 'standard'; // 'standard', 'friction', 'gravity', 'zero-gravity'
+        let friction = 0.05;
+        let gravity = 0.5;
+        let gameSpeed = 1.0;
+        let lastFrameTime = 0;
+        let fps = 0;
+        let frameCount = 0;
+        let lastFpsUpdate = 0;
+        let newBallSpeed = 6;
+        let newBallSize = 25;
+        let newBallColor = '#ffcc00';
         
-        // 物理参数
-        let physicsMode = 'standard'; // standard, friction, gravity, zero-g
-        let frictionCoefficient = 0.05; // 摩擦系数
-        let gravityStrength = 0.5; // 重力强度
-        let speedMultiplier = 1.0; // 速度倍率，默认1.0倍
+        // DOM元素
+        const gameContainer = document.getElementById('game-container');
+        const startScreen = document.getElementById('start-screen');
+        const startButton = document.getElementById('start-button');
+        const comboText = document.getElementById('combo-text');
+        const customizationPanel = document.getElementById('customization-panel');
         
-        // 颜色方案
-        const colors = [
-            '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', 
-            '#FECA57', '#F368E0', '#54A0FF', '#00D2D3',
-            '#A55EE7', '#FF9F43', '#1DD1A1', '#5F27CD'
-        ];
-        
-        // 当前选择的颜色
-        let selectedColor = colors[6]; // 默认选中第7个颜色
-        
-        // 创建球的构造函数
-        class Ball {
-            constructor(x, y, radius, color, speedX = null, speedY = null, speedRange = 6) {
-                this.x = x || Math.random() * (canvas.width - 80) + 40;
-                this.y = y || Math.random() * (canvas.height - 80) + 40;
-                this.radius = radius || 25;
-                this.color = color || colors[Math.floor(Math.random() * colors.length)];
-                this.mass = Math.PI * this.radius * this.radius; // 质量与面积成正比
-                
-                // 随机速度或自定义速度
-                if (speedX !== null && speedY !== null) {
-                    this.dx = speedX;
-                    this.dy = speedY;
-                } else {
-                    const baseSpeed = speedRange;
-                    this.dx = (Math.random() - 0.5) * baseSpeed * 2;
-                    this.dy = (Math.random() - 0.5) * baseSpeed * 2;
-                }
-                
-                this.lastCollision = 0; // 用于防止连续碰撞
-                this.lastWallCollision = 0; // 用于防止连续墙碰撞
-                this.trail = []; // 用于轨迹效果
-                this.elasticity = 0.95; // 弹性系数
-                this.isStatic = false; // 是否为静态球
-            }
+        // 初始化
+        function initGame() {
+            if (gameStarted) return;
             
-            // 更新球的位置
-            update(deltaTime) {
-                // 记录轨迹
-                this.trail.push({x: this.x, y: this.y});
-                if (this.trail.length > 10) {
-                    this.trail.shift();
+            // 隐藏开始屏幕
+            startScreen.style.display = 'none';
+            gameStarted = true;
+            gamePaused = false;
+            
+            // 更新UI
+            document.getElementById('high-score-display').textContent = highScore;
+            
+            // 创建初始球
+            createInitialBalls();
+            
+            // 开始游戏循环
+            requestAnimationFrame(gameLoop);
+        }
+        
+        // 创建初始球
+        function createInitialBalls() {
+            for (let i = 0; i < 3; i++) {
+                createBall();
+            }
+            updateBallCount();
+        }
+        
+        // 创建单个球
+        function createBall(x, y, vx, vy, size, color) {
+            if (balls.length >= 15) return null;
+            
+            const ball = document.createElement('div');
+            ball.className = 'ball';
+            
+            // 随机位置（如果未指定）
+            const containerRect = gameContainer.getBoundingClientRect();
+            const ballSize = size || newBallSize;
+            const posX = x || ballSize + Math.random() * (containerRect.width - 2 * ballSize);
+            const posY = y || ballSize + Math.random() * (containerRect.height - 2 * ballSize);
+            
+            // 随机速度（如果未指定）
+            const speed = vx === undefined ? newBallSpeed : 0;
+            const velX = vx !== undefined ? vx : (Math.random() - 0.5) * 2 * speed;
+            const velY = vy !== undefined ? vy : (Math.random() - 0.5) * 2 * speed;
+            
+            // 设置球属性
+            ball.style.width = ballSize + 'px';
+            ball.style.height = ballSize + 'px';
+            ball.style.left = posX + 'px';
+            ball.style.top = posY + 'px';
+            ball.dataset.size = ballSize;
+            ball.dataset.color = color || newBallColor;
+            ball.style.backgroundColor = ball.dataset.color;
+            
+            // 将球添加到容器
+            gameContainer.appendChild(ball);
+            
+            // 将球添加到数组
+            balls.push({
+                element: ball,
+                x: posX,
+                y: posY,
+                vx: velX,
+                vy: velY,
+                radius: ballSize / 2,
+                mass: ballSize, // 质量与大小成正比
+                color: ball.dataset.color,
+                lastCollisionTime: 0
+            });
+            
+            // 添加点击事件（改变颜色）
+            ball.addEventListener('click', function(e) {
+                e.stopPropagation();
+                if (!gameStarted || gamePaused) return;
+                
+                const ballData = balls.find(b => b.element === this);
+                if (!ballData) return;
+                
+                // 生成随机颜色
+                const hue = Math.floor(Math.random() * 360);
+                const newColor = `hsl(${hue}, 80%, 60%)`;
+                
+                ballData.color = newColor;
+                ballData.element.style.backgroundColor = newColor;
+                ballData.element.style.background = `radial-gradient(circle at 30% 30%, ${newColor}, ${adjustColor(newColor, -30)})`;
+            });
+            
+            // 添加拖拽事件
+            let isDragging = false;
+            let startX, startY;
+            
+            ball.addEventListener('mousedown', function(e) {
+                if (!gameStarted || gamePaused) return;
+                isDragging = true;
+                startX = e.clientX;
+                startY = e.clientY;
+                
+                // 暂停球的运动
+                const ballData = balls.find(b => b.element === this);
+                if (ballData) {
+                    ballData.vx = 0;
+                    ballData.vy = 0;
                 }
                 
-                // 将deltaTime乘以速度倍率
-                const adjustedDeltaTime = deltaTime * speedMultiplier;
+                e.preventDefault();
+            });
+            
+            document.addEventListener('mousemove', function(e) {
+                if (!isDragging || !gameStarted) return;
+                
+                const ballData = balls.find(b => b.element === ball);
+                if (!ballData) return;
+                
+                // 计算拖拽速度
+                const dx = e.clientX - startX;
+                const dy = e.clientY - startY;
+                
+                ballData.vx = dx * 0.5;
+                ballData.vy = dy * 0.5;
+                
+                startX = e.clientX;
+                startY = e.clientY;
+            });
+            
+            document.addEventListener('mouseup', function() {
+                isDragging = false;
+            });
+            
+            return balls[balls.length - 1];
+        }
+        
+        // 调整颜色亮度
+        function adjustColor(color, amount) {
+            return color; // 简化版，实际可以实现颜色调整
+        }
+        
+        // 更新球的位置
+        function updateBallPositions(deltaTime) {
+            if (!gameStarted || gamePaused) return;
+            
+            const containerRect = gameContainer.getBoundingClientRect();
+            const containerWidth = containerRect.width;
+            const containerHeight = containerRect.height;
+            
+            for (let i = 0; i < balls.length; i++) {
+                const ball = balls[i];
                 
                 // 应用物理效果
-                if (physicsMode === 'friction') {
-                    // 摩擦力模式：速度逐渐减小
-                    const friction = 1 - frictionCoefficient * adjustedDeltaTime / 16;
-                    this.dx *= friction;
-                    this.dy *= friction;
-                } else if (physicsMode === 'gravity') {
-                    // 重力模式：向下加速
-                    this.dy += gravityStrength * adjustedDeltaTime / 16;
-                } else if (physicsMode === 'zero-g') {
-                    // 零重力：没有重力，但有轻微阻力
-                    this.dx *= 0.999;
-                    this.dy *= 0.999;
-                }
-                
-                // 更新位置 (使用调整后的时间)
-                this.x += this.dx * adjustedDeltaTime / 16;
-                this.y += this.dy * adjustedDeltaTime / 16;
-                
-                // 检测与边界的碰撞
-                this.handleBoundaryCollision(adjustedDeltaTime);
-                
-                // 速度限制 - 防止速度过大
-                const maxSpeed = 20 * speedMultiplier;
-                const speed = Math.sqrt(this.dx * this.dx + this.dy * this.dy);
-                if (speed > maxSpeed) {
-                    this.dx = (this.dx / speed) * maxSpeed;
-                    this.dy = (this.dy / speed) * maxSpeed;
-                }
-            }
-            
-            // 处理边界碰撞
-            handleBoundaryCollision(deltaTime) {
-                const now = Date.now();
-                let wallCollision = false;
-                const comboThreshold = 1000; // 1秒内多次碰撞算连击
-                
-                // 右边界
-                if (this.x + this.radius > canvas.width) {
-                    this.x = canvas.width - this.radius;
-                    this.dx = -this.dx * this.elasticity;
-                    wallCollision = true;
-                }
-                // 左边界
-                if (this.x - this.radius < 0) {
-                    this.x = this.radius;
-                    this.dx = -this.dx * this.elasticity;
-                    wallCollision = true;
-                }
-                // 下边界
-                if (this.y + this.radius > canvas.height) {
-                    this.y = canvas.height - this.radius;
-                    
-                    if (physicsMode === 'gravity') {
-                        // 重力模式下，下边界有弹性
-                        this.dy = -this.dy * this.elasticity;
-                        
-                        // 如果速度太小，停止运动
-                        if (Math.abs(this.dy) < 0.5 && Math.abs(this.dx) < 0.5) {
-                            this.dy = 0;
-                            this.dx *= 0.9; // 水平方向继续减速
-                        }
-                    } else {
-                        this.dy = -this.dy * this.elasticity;
-                    }
-                    
-                    wallCollision = true;
-                }
-                // 上边界
-                if (this.y - this.radius < 0) {
-                    this.y = this.radius;
-                    this.dy = -this.dy * this.elasticity;
-                    wallCollision = true;
-                }
-                
-                // 计分：边界碰撞
-                if (wallCollision && now - this.lastWallCollision > 100) {
-                    let points = 1;
-                    
-                    // 重力/摩擦力模式下额外加分
-                    if (physicsMode === 'friction' || physicsMode === 'gravity') {
-                        points += 2;
-                    }
-                    
-                    addScore(points, this.x, this.y - this.radius);
-                    this.lastWallCollision = now;
-                    
-                    // 更新连击
-                    if (now - lastCollisionTime < comboThreshold) {
-                        comboCounter++;
-                    } else {
-                        comboCounter = 1;
-                    }
-                    lastCollisionTime = now;
-                    updateComboDisplay();
-                }
-            }
-            
-            // 绘制球
-            draw() {
-                // 绘制轨迹
-                if (physicsMode !== 'standard') {
-                    for (let i = 0; i < this.trail.length; i++) {
-                        const alpha = i / this.trail.length * 0.3;
-                        ctx.beginPath();
-                        ctx.arc(this.trail[i].x, this.trail[i].y, this.radius * (i / this.trail.length), 0, Math.PI * 2);
-                        ctx.fillStyle = `rgba(${parseInt(this.color.slice(1,3), 16)}, ${parseInt(this.color.slice(3,5), 16)}, ${parseInt(this.color.slice(5,7), 16)}, ${alpha})`;
-                        ctx.fill();
-                    }
-                }
-                
-                // 绘制球体
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-                ctx.fillStyle = this.color;
-                ctx.fill();
-                
-                // 添加发光效果
-                const gradient = ctx.createRadialGradient(
-                    this.x - this.radius/3, this.y - this.radius/3, 0,
-                    this.x, this.y, this.radius
-                );
-                gradient.addColorStop(0, 'rgba(255, 255, 255, 0.8)');
-                gradient.addColorStop(0.3, 'rgba(255, 255, 255, 0.3)');
-                gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
-                
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-                ctx.fillStyle = gradient;
-                ctx.fill();
-                
-                // 描边
-                ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)';
-                ctx.lineWidth = 2;
-                ctx.stroke();
-                ctx.closePath();
-                
-                // 添加高光
-                ctx.beginPath();
-                ctx.arc(this.x - this.radius/3, this.y - this.radius/3, this.radius/3, 0, Math.PI * 2);
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
-                ctx.fill();
-                
-                // 绘制速度指示器
-                if (Math.sqrt(this.dx*this.dx + this.dy*this.dy) > 0.5) {
-                    const speed = Math.min(Math.sqrt(this.dx*this.dx + this.dy*this.dy), 10);
-                    ctx.beginPath();
-                    ctx.moveTo(this.x, this.y);
-                    ctx.lineTo(
-                        this.x + this.dx * 2,
-                        this.y + this.dy * 2
-                    );
-                    ctx.strokeStyle = 'rgba(255, 255, 255, 0.7)';
-                    ctx.lineWidth = 2 + speed/5;
-                    ctx.stroke();
-                }
-            }
-            
-            // 检测是否被点击
-            isClicked(x, y) {
-                const dx = this.x - x;
-                const dy = this.y - y;
-                return Math.sqrt(dx * dx + dy * dy) < this.radius;
-            }
-            
-            // 设置静态球（固定位置）
-            setStatic() {
-                this.isStatic = true;
-                this.dx = 0;
-                this.dy = 0;
-                this.elasticity = 0.7; // 静态球弹性较小
-                this.color = '#8E44AD';
-            }
-            
-            // 重置速度
-            resetSpeed() {
-                if (this.isStatic) return;
-                
-                const baseSpeed = 6; // 默认速度
-                this.dx = (Math.random() - 0.5) * baseSpeed * 2;
-                this.dy = (Math.random() - 0.5) * baseSpeed * 2;
-                this.trail = [];
-            }
-        }
-        
-        // 检测球之间的碰撞
-        function detectCollision(ball1, ball2) {
-            const dx = ball1.x - ball2.x;
-            const dy = ball1.y - ball2.y;
-            const distance = Math.sqrt(dx * dx + dy * dy);
-            
-            if (distance < ball1.radius + ball2.radius && 
-                Date.now() - ball1.lastCollision > 100 &&
-                Date.now() - ball2.lastCollision > 100) {
-                
-                // 如果其中一个是静态球，只改变动球的速度
-                if (ball1.isStatic || ball2.isStatic) {
-                    handleStaticCollision(ball1, ball2);
-                    return true;
-                }
-                
-                // 计算碰撞后的速度（基于动量守恒）
-                const angle = Math.atan2(dy, dx);
-                const sin = Math.sin(angle);
-                const cos = Math.cos(angle);
-                
-                // 计算旋转后的位置
-                const pos1 = {x: 0, y: 0};
-                const pos2 = {x: distance * cos, y: distance * sin};
-                
-                // 计算旋转后的速度
-                const vel1 = rotate(ball1.dx, ball1.dy, sin, cos, true);
-                const vel2 = rotate(ball2.dx, ball2.dy, sin, cos, true);
-                
-                // 碰撞后速度交换（考虑质量和弹性）
-                const velocity1 = ((ball1.mass - ball2.mass) * vel1.x + 2 * ball2.mass * vel2.x) / (ball1.mass + ball2.mass);
-                const velocity2 = ((ball2.mass - ball1.mass) * vel2.x + 2 * ball1.mass * vel1.x) / (ball1.mass + ball2.mass);
-                
-                // 应用弹性系数
-                const elasticity = (ball1.elasticity + ball2.elasticity) / 2;
-                
-                // 更新速度
-                const newVel1 = rotate(velocity1 * elasticity, vel1.y * elasticity, sin, cos, false);
-                const newVel2 = rotate(velocity2 * elasticity, vel2.y * elasticity, sin, cos, false);
-                
-                // 应用新速度
-                ball1.dx = newVel1.x;
-                ball1.dy = newVel1.y;
-                ball2.dx = newVel2.x;
-                ball2.dy = newVel2.y;
-                
-                // 防止球体粘连
-                const overlap = ball1.radius + ball2.radius - distance;
-                if (overlap > 0) {
-                    const moveX = (overlap / 2) * (dx / distance);
-                    const moveY = (overlap / 2) * (dy / distance);
-                    
-                    ball1.x += moveX;
-                    ball1.y += moveY;
-                    ball2.x -= moveX;
-                    ball2.y -= moveY;
-                }
-                
-                // 记录碰撞时间
-                ball1.lastCollision = Date.now();
-                ball2.lastCollision = Date.now();
-                
-                // 更新碰撞计数
-                collisionCounter++;
-                document.getElementById('collisionCount').textContent = collisionCounter;
-                
-                // 计分：球与球碰撞
-                const now = Date.now();
-                let baseScore = 10;
-                
-                // 重力/摩擦力模式下额外加分
                 if (physicsMode === 'friction' || physicsMode === 'gravity') {
-                    baseScore += 5;
+                    // 摩擦力
+                    ball.vx *= (1 - friction);
+                    ball.vy *= (1 - friction);
+                    
+                    // 重力
+                    if (physicsMode === 'gravity') {
+                        ball.vy += gravity * gameSpeed;
+                    }
                 }
                 
-                let bonusScore = 0;
+                // 移动球
+                ball.x += ball.vx * deltaTime * gameSpeed;
+                ball.y += ball.vy * deltaTime * gameSpeed;
                 
-                // 连击加分
-                if (now - lastCollisionTime < 1000) {
-                    comboCounter++;
-                    bonusScore = Math.min(comboCounter * 2, 20); // 最多额外20分
-                } else {
-                    comboCounter = 1;
+                // 边界碰撞
+                const radius = ball.radius;
+                
+                // 检测X轴边界碰撞
+                if (ball.x - radius < 0) {
+                    ball.x = radius;
+                    ball.vx = Math.abs(ball.vx); // 反弹
+                    handleBoundaryCollision(i);
+                } else if (ball.x + radius > containerWidth) {
+                    ball.x = containerWidth - radius;
+                    ball.vx = -Math.abs(ball.vx); // 反弹
+                    handleBoundaryCollision(i);
                 }
                 
-                // 多球奖励 - 5个球以上双倍得分
-                let finalScore = baseScore + bonusScore;
-                if (balls.length >= 5) {
-                    finalScore *= 2;
+                // 检测Y轴边界碰撞
+                if (ball.y - radius < 0) {
+                    ball.y = radius;
+                    ball.vy = Math.abs(ball.vy); // 反弹
+                    handleBoundaryCollision(i);
+                } else if (ball.y + radius > containerHeight) {
+                    ball.y = containerHeight - radius;
+                    ball.vy = -Math.abs(ball.vy); // 反弹
+                    handleBoundaryCollision(i);
                 }
                 
-                addScore(finalScore, (ball1.x + ball2.x) / 2, (ball1.y + ball2.y) / 2 - 20);
-                lastCollisionTime = now;
-                updateComboDisplay();
-                
-                // 创建碰撞效果
-                createCollisionEffect((ball1.x + ball2.x) / 2, (ball1.y + ball2.y) / 2, ball1.color, ball2.color);
-                
-                return true;
+                // 更新DOM元素位置
+                ball.element.style.left = (ball.x - radius) + 'px';
+                ball.element.style.top = (ball.y - radius) + 'px';
             }
-            return false;
+            
+            // 检测球与球之间的碰撞
+            detectBallCollisions();
         }
         
-        // 静态球碰撞处理
-        function handleStaticCollision(ball1, ball2) {
-            let movingBall = ball1.isStatic ? ball2 : ball1;
-            let staticBall = ball1.isStatic ? ball1 : ball2;
+        // 处理边界碰撞
+        function handleBoundaryCollision(ballIndex) {
+            const currentTime = Date.now();
+            const ball = balls[ballIndex];
             
-            // 计算碰撞方向
-            const dx = movingBall.x - staticBall.x;
-            const dy = movingBall.y - staticBall.y;
+            // 计分
+            addScore(1); // 边界碰撞+1分
+            
+            // 更新碰撞次数
+            collisionCount++;
+            document.getElementById('collision-count').textContent = collisionCount;
+            
+            // 连击处理
+            if (currentTime - lastCollisionTime < 1000) {
+                comboCount++;
+                showCombo(comboCount);
+            } else {
+                comboCount = 1;
+            }
+            lastCollisionTime = currentTime;
+            document.getElementById('combo-display-stat').textContent = comboCount;
+            
+            // 记录最后碰撞时间
+            ball.lastCollisionTime = currentTime;
+        }
+        
+        // 检测球与球之间的碰撞
+        function detectBallCollisions() {
+            const currentTime = Date.now();
+            
+            for (let i = 0; i < balls.length; i++) {
+                for (let j = i + 1; j < balls.length; j++) {
+                    const ball1 = balls[i];
+                    const ball2 = balls[j];
+                    
+                    // 计算球心之间的距离
+                    const dx = ball2.x - ball1.x;
+                    const dy = ball2.y - ball1.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    const minDistance = ball1.radius + ball2.radius;
+                    
+                    // 检测是否碰撞
+                    if (distance < minDistance) {
+                        // 处理碰撞
+                        resolveCollision(ball1, ball2);
+                        
+                        // 只记录一次碰撞
+                        if (currentTime - ball1.lastCollisionTime > 100 && currentTime - ball2.lastCollisionTime > 100) {
+                            handleBallCollision(i, j);
+                        }
+                    }
+                }
+            }
+        }
+        
+        // 解决球与球之间的碰撞
+        function resolveCollision(ball1, ball2) {
+            const dx = ball2.x - ball1.x;
+            const dy = ball2.y - ball1.y;
             const distance = Math.sqrt(dx * dx + dy * dy);
             
-            // 计算法向量
+            // 归一化向量
             const nx = dx / distance;
             const ny = dy / distance;
             
+            // 最小距离
+            const minDistance = ball1.radius + ball2.radius;
+            
+            // 碰撞深度
+            const depth = minDistance - distance;
+            
+            // 移动球避免重叠
+            const moveX = nx * depth * 0.5;
+            const moveY = ny * depth * 0.5;
+            
+            ball1.x -= moveX;
+            ball1.y -= moveY;
+            ball2.x += moveX;
+            ball2.y += moveY;
+            
             // 计算相对速度
-            const vx = movingBall.dx;
-            const vy = movingBall.dy;
+            const vx = ball2.vx - ball1.vx;
+            const vy = ball2.vy - ball1.vy;
             
-            // 计算法向速度
-            const vn = vx * nx + vy * ny;
+            // 计算沿法线方向的速度分量
+            const velocityAlongNormal = vx * nx + vy * ny;
             
-            // 应用弹性系数
-            const elasticity = staticBall.elasticity;
+            // 如果球相互远离，则不需要处理碰撞
+            if (velocityAlongNormal > 0) return;
             
-            // 更新速度
-            movingBall.dx = vx - (1 + elasticity) * vn * nx;
-            movingBall.dy = vy - (1 + elasticity) * vn * ny;
+            // 动量守恒计算
+            const restitution = 0.8; // 恢复系数
+            const impulse = -(1 + restitution) * velocityAlongNormal / (1 / ball1.mass + 1 / ball2.mass);
             
-            // 防止粘连
-            const overlap = staticBall.radius + movingBall.radius - distance;
-            if (overlap > 0) {
-                movingBall.x += (overlap + 0.1) * nx;
-                movingBall.y += (overlap + 0.1) * ny;
-            }
-            
-            // 记录碰撞
-            movingBall.lastCollision = Date.now();
-            staticBall.lastCollision = Date.now();
-            
-            // 计分
-            const now = Date.now();
-            let baseScore = 8; // 静态球碰撞分数略低
-            
-            addScore(baseScore, movingBall.x, movingBall.y);
+            // 应用冲量
+            ball1.vx -= (impulse * nx) / ball1.mass;
+            ball1.vy -= (impulse * ny) / ball1.mass;
+            ball2.vx += (impulse * nx) / ball2.mass;
+            ball2.vy += (impulse * ny) / ball2.mass;
         }
         
-        // 旋转速度向量
-        function rotate(x, y, sin, cos, reverse) {
-            const result = {x: 0, y: 0};
-            if (reverse) {
-                result.x = x * cos + y * sin;
-                result.y = y * cos - x * sin;
+        // 处理球与球的碰撞
+        function handleBallCollision(ballIndex1, ballIndex2) {
+            const currentTime = Date.now();
+            
+            // 计分 - 球与球碰撞+10分
+            let points = 10;
+            
+            // 额外加分规则
+            const multiplier = calculateScoreMultiplier();
+            points *= multiplier;
+            
+            addScore(points);
+            
+            // 更新碰撞次数
+            collisionCount++;
+            document.getElementById('collision-count').textContent = collisionCount;
+            
+            // 连击处理
+            if (currentTime - lastCollisionTime < 1000) {
+                comboCount++;
+                showCombo(comboCount);
             } else {
-                result.x = x * cos - y * sin;
-                result.y = y * cos + x * sin;
+                comboCount = 1;
             }
-            return result;
+            lastCollisionTime = currentTime;
+            document.getElementById('combo-display-stat').textContent = comboCount;
+            
+            // 记录最后碰撞时间
+            balls[ballIndex1].lastCollisionTime = currentTime;
+            balls[ballIndex2].lastCollisionTime = currentTime;
         }
         
-        // 创建碰撞特效
-        function createCollisionEffect(x, y, color1, color2) {
-            const gameContainer = document.querySelector('.game-container');
-            const effectSize = 30;
+        // 显示连击效果
+        function showCombo(count) {
+            if (count < 2) return;
             
-            // 创建爆炸效果
-            const effect = document.createElement('div');
-            effect.className = 'trail-effect';
-            effect.style.left = (x - effectSize/2) + 'px';
-            effect.style.top = (y - effectSize/2) + 'px';
-            effect.style.width = effectSize + 'px';
-            effect.style.height = effectSize + 'px';
-            effect.style.background = `radial-gradient(circle, ${color1} 0%, ${color2} 50%, transparent 70%)`;
-            
-            gameContainer.appendChild(effect);
+            comboText.textContent = `连击 x${count}!`;
+            comboText.style.opacity = '1';
             
             // 动画效果
-            let opacity = 0.7;
-            let size = effectSize;
-            
-            const animateEffect = () => {
-                size += 3;
-                opacity -= 0.05;
-                
-                effect.style.width = size + 'px';
-                effect.style.height = size + 'px';
-                effect.style.left = (x - size/2) + 'px';
-                effect.style.top = (y - size/2) + 'px';
-                effect.style.opacity = opacity;
-                
-                if (opacity <= 0) {
-                    effect.remove();
-                    return;
+            let scale = 1;
+            const animate = () => {
+                if (scale < 1.5) {
+                    scale += 0.05;
+                    comboText.style.transform = `translateX(-50%) scale(${scale})`;
+                    requestAnimationFrame(animate);
                 }
-                
-                requestAnimationFrame(animateEffect);
             };
+            animate();
             
-            requestAnimationFrame(animateEffect);
-        }
-        
-        // 添加分数
-        function addScore(points, x, y) {
-            score += points;
-            document.getElementById('score').textContent = score;
-            
-            // 创建分数浮动效果
-            createScorePopup(points, x, y);
-            
-            // 检查是否破纪录
-            if (score > highScore) {
-                highScore = score;
-                localStorage.setItem('collisionBallHighScore', highScore);
-                document.getElementById('highScore').textContent = highScore;
-                
-                // 破纪录特效
-                showRecordAnimation();
-            }
-        }
-        
-        // 创建分数浮动效果
-        function createScorePopup(points, x, y) {
-            const popup = document.createElement('div');
-            popup.className = 'score-popup';
-            popup.textContent = '+' + points;
-            popup.style.left = (x - 30) + 'px';
-            popup.style.top = (y - 10) + 'px';
-            
-            const gameContainer = document.querySelector('.game-container');
-            gameContainer.appendChild(popup);
-            
-            // 动画结束后移除元素
+            // 逐渐消失
             setTimeout(() => {
-                popup.remove();
+                comboText.style.opacity = '0';
+                comboText.style.transform = 'translateX(-50%) scale(1)';
             }, 1000);
         }
         
-        // 显示破纪录动画
-        function showRecordAnimation() {
-            const gameContainer = document.querySelector('.game-container');
-            const recordElement = document.createElement('div');
-            recordElement.style.position = 'absolute';
-            recordElement.style.top = '50%';
-            recordElement.style.left = '50%';
-            recordElement.style.transform = 'translate(-50%, -50%)';
-            recordElement.style.fontSize = '48px';
-            recordElement.style.color = '#FFD700';
-            recordElement.style.fontWeight = 'bold';
-            recordElement.style.textShadow = '0 0 20px rgba(255, 215, 0, 0.9)';
-            recordElement.style.zIndex = '20';
-            recordElement.style.animation = 'pulse 0.5s 3';
-            recordElement.textContent = '新纪录!';
+        // 计算得分倍率
+        function calculateScoreMultiplier() {
+            let multiplier = 1;
             
-            gameContainer.appendChild(recordElement);
+            // 多球加成
+            if (balls.length >= 5) {
+                multiplier *= 2;
+            }
             
-            setTimeout(() => {
-                recordElement.remove();
-            }, 1500);
+            // 物理模式加成
+            if (physicsMode === 'friction' || physicsMode === 'gravity') {
+                multiplier *= 1.5;
+            }
+            
+            // 连击加成
+            if (comboCount > 1) {
+                multiplier *= (1 + comboCount * 0.1);
+            }
+            
+            return multiplier;
         }
         
-        // 更新连击显示
-        function updateComboDisplay() {
-            document.getElementById('combo').textContent = comboCounter;
+        // 添加分数
+        function addScore(points) {
+            score += points;
+            document.getElementById('score-display').textContent = Math.floor(score);
             
-            // 连击特效
-            if (comboCounter >= 5) {
-                document.getElementById('combo').style.color = '#FF5733';
-                document.getElementById('combo').style.textShadow = '0 0 10px rgba(255, 87, 51, 0.8)';
-            } else {
-                document.getElementById('combo').style.color = '';
-                document.getElementById('combo').style.textShadow = '';
+            // 更新最高分
+            if (score > highScore) {
+                highScore = score;
+                localStorage.setItem('highScore', highScore);
+                document.getElementById('high-score-display').textContent = Math.floor(highScore);
             }
         }
         
-        // 更新速度指示器
-        function updateSpeedIndicator() {
-            speedIndicator.textContent = `速度: ${speedMultiplier.toFixed(1)}x`;
-            document.getElementById('speedMultiplierValue').textContent = speedMultiplier.toFixed(1);
+        // 游戏主循环
+        function gameLoop(timestamp) {
+            if (!gameStarted) return;
+            
+            // 计算帧率
+            if (!lastFrameTime) lastFrameTime = timestamp;
+            const deltaTime = (timestamp - lastFrameTime) / 1000; // 转换为秒
+            lastFrameTime = timestamp;
+            
+            // 更新FPS
+            frameCount++;
+            if (timestamp - lastFpsUpdate > 1000) {
+                fps = frameCount;
+                document.getElementById('fps-display').textContent = fps;
+                frameCount = 0;
+                lastFpsUpdate = timestamp;
+            }
+            
+            // 更新球的位置
+            updateBallPositions(deltaTime);
+            
+            // 继续游戏循环
+            if (!gamePaused) {
+                requestAnimationFrame(gameLoop);
+            }
         }
         
-        // 切换物理模式
-        function changePhysicsMode(mode) {
-            physicsMode = mode;
-            document.getElementById('physicsMode').textContent = 
-                mode === 'standard' ? '标准' : 
-                mode === 'friction' ? '摩擦力' : 
-                mode === 'gravity' ? '重力' : '零重力';
-                
-            // 更新激活按钮
-            document.querySelectorAll('.mode-btn').forEach(btn => {
-                btn.classList.remove('active');
+        // 更新球的数量显示
+        function updateBallCount() {
+            document.getElementById('ball-count').textContent = balls.length;
+        }
+        
+        // 清除所有球
+        function clearAllBalls() {
+            balls.forEach(ball => {
+                if (ball.element && ball.element.parentNode) {
+                    ball.element.parentNode.removeChild(ball.element);
+                }
             });
-            document.querySelector(`.mode-btn[data-mode="${mode}"]`).classList.add('active');
+            balls = [];
+            updateBallCount();
+        }
+        
+        // 暂停/恢复游戏
+        function togglePause() {
+            gamePaused = !gamePaused;
+            document.getElementById('pause').textContent = gamePaused ? '继续' : '暂停';
             
-            // 重置球的速度
-            if (mode !== 'standard') {
-                balls.forEach(ball => {
-                    if (!ball.isStatic) {
-                        ball.resetSpeed();
-                    }
-                });
+            if (!gamePaused) {
+                lastFrameTime = 0; // 重置帧时间
+                requestAnimationFrame(gameLoop);
             }
         }
         
         // 重置所有球的速度
-        function resetAllSpeeds() {
+        function resetBallSpeeds() {
             balls.forEach(ball => {
-                ball.resetSpeed();
+                ball.vx = (Math.random() - 0.5) * 10;
+                ball.vy = (Math.random() - 0.5) * 10;
             });
         }
         
-        // 创建静态球
-        function createStaticBall(x, y) {
-            const staticBall = new Ball(x, y, 25 + Math.random() * 15);
-            staticBall.setStatic();
-            balls.push(staticBall);
-            document.getElementById('ballCount').textContent = balls.length;
-            updateButtonStates();
-        }
-        
-        // 更新按钮状态
-        function updateButtonStates() {
-            const addBtn = document.getElementById('addBallBtn');
-            addBtn.disabled = balls.length >= 15;
-        }
-        
-        // 切换暂停状态
-        function togglePause() {
-            isPaused = !isPaused;
-            pauseOverlay.style.display = isPaused ? 'flex' : 'none';
-            
-            const pauseBtn = document.getElementById('pauseBtn');
-            pauseBtn.innerHTML = isPaused ? 
-                '<i class="fas fa-play"></i> 继续' : 
-                '<i class="fas fa-pause"></i> 暂停';
-            
-            if (!isPaused) {
-                lastTimestamp = 0; // 重置时间戳
-                animate(0); // 恢复动画
-            } else {
-                cancelAnimationFrame(animationId);
-            }
-        }
-        
-        // 显示添加球选项模态框
-        function showAddBallModal() {
-            if (balls.length >= 15) return;
-            
-            // 重置模态框中的值
-            document.getElementById('ballSpeedRange').value = 6;
-            document.getElementById('ballSpeedValue').textContent = 6;
-            document.getElementById('ballSizeRange').value = 25;
-            document.getElementById('ballSizeValue').textContent = 25;
-            
-            // 移除之前的选中状态
-            document.querySelectorAll('.preset-color').forEach(el => {
-                el.classList.remove('selected');
-            });
-            
-            // 选中默认颜色
-            selectedColor = colors[6];
-            const defaultColorEl = document.querySelector(`.preset-color[data-color="${selectedColor}"]`);
-            if (defaultColorEl) {
-                defaultColorEl.classList.add('selected');
-            }
-            
-            document.getElementById('customColorInput').value = selectedColor;
-            
-            addBallModal.classList.add('active');
-        }
-        
-        // 隐藏添加球选项模态框
-        function hideAddBallModal() {
-            addBallModal.classList.remove('active');
-        }
-        
-        // 添加新球
-        function addNewBall() {
-            const speedRange = parseFloat(document.getElementById('ballSpeedRange').value);
-            const radius = parseFloat(document.getElementById('ballSizeRange').value);
-            
-            // 在鼠标位置或随机位置创建球
-            let x, y;
-            if (mouseX > 0 && mouseY > 0 && mouseX < canvas.width && mouseY < canvas.height) {
-                x = mouseX;
-                y = mouseY;
-            } else {
-                x = Math.random() * (canvas.width - 80) + 40;
-                y = Math.random() * (canvas.height - 80) + 40;
-            }
-            
-            balls.push(new Ball(x, y, radius, selectedColor, null, null, speedRange));
-            document.getElementById('ballCount').textContent = balls.length;
-            updateButtonStates();
-            hideAddBallModal();
-        }
-        
-        // 初始化游戏
-        function init() {
-            // 从localStorage加载最高分
-            highScore = parseInt(localStorage.getItem('collisionBallHighScore')) || 0;
-            document.getElementById('highScore').textContent = highScore;
-            
-            // 设置滑块初始值
-            document.getElementById('frictionValue').textContent = frictionCoefficient.toFixed(2);
-            document.getElementById('gravityValue').textContent = gravityStrength.toFixed(1);
-            document.getElementById('speedMultiplierValue').textContent = speedMultiplier.toFixed(1);
-            
-            // 添加滑块事件监听器
-            document.getElementById('frictionRange').addEventListener('input', function() {
-                frictionCoefficient = parseFloat(this.value) / 100;
-                document.getElementById('frictionValue').textContent = frictionCoefficient.toFixed(2);
-            });
-            
-            document.getElementById('gravityRange').addEventListener('input', function() {
-                gravityStrength = parseFloat(this.value) / 10;
-                document.getElementById('gravityValue').textContent = gravityStrength.toFixed(1);
-            });
-            
-            document.getElementById('speedMultiplierRange').addEventListener('input', function() {
-                // 将0-100范围映射为0.1-5.0的速度倍率
-                speedMultiplier = 0.5 + parseFloat(this.value) * 4.5 / 100;
-                updateSpeedIndicator();
-            });
-            
-            // 模式按钮事件监听
-            document.querySelectorAll('.mode-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const mode = this.getAttribute('data-mode');
-                    changePhysicsMode(mode);
-                });
-            });
-            
-            // 添加球模态框事件
-            document.getElementById('addBallBtn').addEventListener('click', showAddBallModal);
-            document.getElementById('cancelAddBall').addEventListener('click', hideAddBallModal);
-            document.getElementById('confirmAddBall').addEventListener('click', addNewBall);
-            
-            // 颜色选择
-            document.querySelectorAll('.preset-color').forEach(el => {
-                el.addEventListener('click', function() {
-                    selectedColor = this.getAttribute('data-color');
-                    document.querySelectorAll('.preset-color').forEach(c => c.classList.remove('selected'));
-                    this.classList.add('selected');
-                    document.getElementById('customColorInput').value = selectedColor;
-                });
-            });
-            
-            document.getElementById('applyCustomColor').addEventListener('click', function() {
-                selectedColor = document.getElementById('customColorInput').value;
-                document.querySelectorAll('.preset-color').forEach(c => c.classList.remove('selected'));
-            });
-            
-            // 创建初始球
-            for (let i = 0; i < 3; i++) {
-                balls.push(new Ball());
-            }
-            
-            // 创建一个静态球
-            createStaticBall(canvas.width / 2, canvas.height / 2);
-            
-            // 更新UI
-            document.getElementById('ballCount').textContent = balls.length;
-            
-            // 开始动画循环
-            animate(0);
-            
-            // 添加事件监听器
-            setupEventListeners();
-        }
-        
-        // 设置事件监听器
-        function setupEventListeners() {
-            // 改变球颜色
-            document.getElementById('changeColorBtn').addEventListener('click', () => {
-                if (isPaused) return;
-                balls.forEach(ball => {
-                    if (!ball.isStatic) {
-                        ball.color = colors[Math.floor(Math.random() * colors.length)];
-                    }
-                });
-            });
-            
-            // 清除所有球
-            document.getElementById('clearBtn').addEventListener('click', () => {
-                if (isPaused) return;
-                balls.length = 0;
-                collisionCounter = 0;
-                score = 0;
-                comboCounter = 0;
-                document.getElementById('score').textContent = score;
-                document.getElementById('ballCount').textContent = 0;
-                document.getElementById('collisionCount').textContent = 0;
-                document.getElementById('combo').textContent = '0';
-                // 重新创建静态球
-                createStaticBall(canvas.width / 2, canvas.height / 2);
-                updateButtonStates();
-            });
-            
-            // 重置速度
-            document.getElementById('resetSpeedBtn').addEventListener('click', () => {
-                if (isPaused) return;
-                resetAllSpeeds();
-            });
-            
-            // 暂停/继续
-            document.getElementById('pauseBtn').addEventListener('click', togglePause);
-            
-            // 鼠标事件
-            canvas.addEventListener('mousedown', (e) => {
-                if (isPaused) return;
-                const rect = canvas.getBoundingClientRect();
-                mouseX = e.clientX - rect.left;
-                mouseY = e.clientY - rect.top;
-                
-                // 检查是否点击了球
-                let clickedBall = false;
-                for (let i = balls.length - 1; i >= 0; i--) {
-                    if (balls[i].isClicked(mouseX, mouseY)) {
-                        clickedBall = true;
-                        if (balls[i].isStatic) {
-                            // 点击静态球将其移除
-                            balls.splice(i, 1);
-                            document.getElementById('ballCount').textContent = balls.length;
-                        } else {
-                            // 开始拖拽
-                            isDragging = true;
-                            draggedBall = balls[i];
-                            dragStartX = mouseX;
-                            dragStartY = mouseY;
-                        }
-                        break;
-                    }
-                }
-                
-                // 如果没有点击到球，在点击位置创建一个静态球
-                if (!clickedBall) {
-                    createStaticBall(mouseX, mouseY);
-                }
-            });
-            
-            canvas.addEventListener('mousemove', (e) => {
-                if (isPaused || !isDragging || !draggedBall) return;
-                const rect = canvas.getBoundingClientRect();
-                mouseX = e.clientX - rect.left;
-                mouseY = e.clientY - rect.top;
-            });
-            
-            canvas.addEventListener('mouseup', (e) => {
-                if (isDragging && draggedBall) {
-                    // 计算拖拽距离和方向
-                    const dx = mouseX - dragStartX;
-                    const dy = mouseY - dragStartY;
-                    
-                    // 设置球的速度
-                    draggedBall.dx = dx * 0.3;
-                    draggedBall.dy = dy * 0.3;
-                    draggedBall.trail = []; // 重置轨迹
-                    
-                    isDragging = false;
-                    draggedBall = null;
-                }
-            });
-            
-            canvas.addEventListener('mouseleave', () => {
-                isDragging = false;
-                draggedBall = null;
-            });
-            
-            // 点击canvas改变球颜色
-            canvas.addEventListener('click', (e) => {
-                if (isPaused || isDragging) return;
-                const rect = canvas.getBoundingClientRect();
-                mouseX = e.clientX - rect.left;
-                mouseY = e.clientY - rect.top;
-                
-                // 查找被点击的球
-                for (let i = balls.length - 1; i >= 0; i--) {
-                    if (balls[i].isClicked(mouseX, mouseY) && !balls[i].isStatic) {
-                        balls[i].color = colors[Math.floor(Math.random() * colors.length)];
-                        break;
-                    }
-                }
-            });
-            
-            // 窗口大小调整
-            window.addEventListener('resize', () => {
-                const container = document.querySelector('.game-container');
-                if (window.innerWidth < 650) {
-                    canvas.width = container.offsetWidth;
-                    canvas.height = container.offsetWidth * 0.67;
-                }
-            });
-            
-            // 点击模态框外部关闭
-            addBallModal.addEventListener('click', (e) => {
-                if (e.target === addBallModal) {
-                    hideAddBallModal();
-                }
-            });
-            
-            // 速度和大小滑块更新显示
-            document.getElementById('ballSpeedRange').addEventListener('input', function() {
-                document.getElementById('ballSpeedValue').textContent = this.value;
-            });
-            
-            document.getElementById('ballSizeRange').addEventListener('input', function() {
-                document.getElementById('ballSizeValue').textContent = this.value;
-            });
-        }
-        
-        // 动画循环
-        function animate(timestamp) {
-            if (isPaused) return;
-            
-            // 计算帧率
-            frameCount++;
-            if (timestamp - lastTimestamp >= 1000) {
-                fps = frameCount;
-                document.getElementById('fps').textContent = fps;
-                frameCount = 0;
-                lastTimestamp = timestamp;
-            }
-            
-            // 计算时间差
-            const deltaTime = timestamp - (lastTimestamp || timestamp);
-            lastTimestamp = timestamp;
-            
-            // 清空canvas
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            // 检测球之间的碰撞
-            for (let i = 0; i < balls.length; i++) {
-                for (let j = i + 1; j < balls.length; j++) {
-                    detectCollision(balls[i], balls[j]);
-                }
-            }
-            
-            // 更新并绘制所有球
+        // 随机化所有球的颜色
+        function randomizeBallColors() {
             balls.forEach(ball => {
-                ball.update(deltaTime);
-                ball.draw();
+                const hue = Math.floor(Math.random() * 360);
+                const newColor = `hsl(${hue}, 80%, 60%)`;
+                ball.color = newColor;
+                ball.element.style.backgroundColor = newColor;
+                ball.element.style.background = `radial-gradient(circle at 30% 30%, ${newColor}, ${adjustColor(newColor, -30)})`;
             });
-            
-            // 绘制拖拽预览
-            if (isDragging && draggedBall) {
-                ctx.beginPath();
-                ctx.moveTo(draggedBall.x, draggedBall.y);
-                ctx.lineTo(mouseX, mouseY);
-                ctx.strokeStyle = 'rgba(255, 255, 255, 0.7)';
-                ctx.lineWidth = 2;
-                ctx.stroke();
-                
-                // 绘制速度预览箭头
-                const dx = mouseX - draggedBall.x;
-                const dy = mouseY - draggedBall.y;
-                const length = Math.sqrt(dx*dx + dy*dy);
-                if (length > 10) {
-                    const arrowSize = 10;
-                    const nx = dx / length;
-                    const ny = dy / length;
-                    
-                    ctx.beginPath();
-                    ctx.moveTo(mouseX, mouseY);
-                    ctx.lineTo(mouseX - (nx * arrowSize + ny * arrowSize/2), mouseY - (ny * arrowSize - nx * arrowSize/2));
-                    ctx.lineTo(mouseX - (nx * arrowSize - ny * arrowSize/2), mouseY - (ny * arrowSize + nx * arrowSize/2));
-                    ctx.closePath();
-                    ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-                    ctx.fill();
-                }
-            }
-            
-            // 更新连击计时器
-            if (Date.now() - lastCollisionTime > 1500 && comboCounter > 0) {
-                comboCounter = 0;
-                updateComboDisplay();
-            }
-            
-            // 继续动画
-            animationId = requestAnimationFrame(animate);
         }
         
-        // 初始化游戏
-        window.onload = init;
+        // 设置物理模式
+        function setPhysicsMode(mode) {
+            physicsMode = mode;
+            document.getElementById('physics-mode').textContent = 
+                mode === 'standard' ? '标准' : 
+                mode === 'friction' ? '摩擦力' : 
+                mode === 'gravity' ? '重力' : '零重力';
+            
+            // 更新按钮样式
+            document.getElementById('standard-mode').classList.toggle('active', mode === 'standard');
+            document.getElementById('friction-mode').classList.toggle('active', mode === 'friction');
+            document.getElementById('gravity-mode').classList.toggle('active', mode === 'gravity');
+            document.getElementById('zero-gravity').classList.toggle('active', mode === 'zero-gravity');
+        }
+        
+        // 事件监听器
+        startButton.addEventListener('click', initGame);
+        
+        document.getElementById('add-ball').addEventListener('click', function() {
+            if (!gameStarted) return;
+            if (balls.length < 15) {
+                createBall();
+                updateBallCount();
+            }
+        });
+        
+        document.getElementById('clear-all').addEventListener('click', function() {
+            if (!gameStarted) return;
+            clearAllBalls();
+        });
+        
+        document.getElementById('pause').addEventListener('click', function() {
+            if (!gameStarted) return;
+            togglePause();
+        });
+        
+        document.getElementById('reset-speed').addEventListener('click', function() {
+            if (!gameStarted) return;
+            resetBallSpeeds();
+        });
+        
+        document.getElementById('random-color').addEventListener('click', function() {
+            if (!gameStarted) return;
+            randomizeBallColors();
+        });
+        
+        // 物理模式按钮
+        document.getElementById('standard-mode').addEventListener('click', function() {
+            setPhysicsMode('standard');
+        });
+        
+        document.getElementById('friction-mode').addEventListener('click', function() {
+            setPhysicsMode('friction');
+        });
+        
+        document.getElementById('gravity-mode').addEventListener('click', function() {
+            setPhysicsMode('gravity');
+        });
+        
+        document.getElementById('zero-gravity').addEventListener('click', function() {
+            setPhysicsMode('zero-gravity');
+        });
+        
+        // 滑块事件
+        document.getElementById('friction-slider').addEventListener('input', function() {
+            friction = parseFloat(this.value);
+            document.getElementById('friction-value').textContent = friction.toFixed(2);
+        });
+        
+        document.getElementById('gravity-slider').addEventListener('input', function() {
+            gravity = parseFloat(this.value);
+            document.getElementById('gravity-value').textContent = gravity.toFixed(1);
+        });
+        
+        document.getElementById('speed-slider').addEventListener('input', function() {
+            gameSpeed = parseFloat(this.value);
+            document.getElementById('speed-value').textContent = gameSpeed.toFixed(1);
+            document.getElementById('speed-display').textContent = gameSpeed.toFixed(1) + 'x';
+        });
+        
+        // 自定义新球参数
+        document.getElementById('new-ball-speed').addEventListener('input', function() {
+            newBallSpeed = parseInt(this.value);
+            document.getElementById('new-ball-speed-value').textContent = newBallSpeed;
+        });
+        
+        document.getElementById('new-ball-size').addEventListener('input', function() {
+            newBallSize = parseInt(this.value);
+            document.getElementById('new-ball-size-value').textContent = newBallSize;
+        });
+        
+        document.getElementById('new-ball-color').addEventListener('input', function() {
+            newBallColor = this.value;
+        });
+        
+        // 显示自定义面板
+        document.getElementById('add-ball').addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            customizationPanel.style.display = 'block';
+        });
+        
+        // 应用自定义设置
+        document.getElementById('apply-customization').addEventListener('click', function() {
+            customizationPanel.style.display = 'none';
+        });
+        
+        // 取消自定义设置
+        document.getElementById('cancel-customization').addEventListener('click', function() {
+            customizationPanel.style.display = 'none';
+        });
+        
+        // 点击容器关闭自定义面板
+        gameContainer.addEventListener('click', function() {
+            customizationPanel.style.display = 'none';
+        });
+        
+        // 初始化UI
+        document.getElementById('friction-value').textContent = friction.toFixed(2);
+        document.getElementById('gravity-value').textContent = gravity.toFixed(1);
+        document.getElementById('speed-value').textContent = gameSpeed.toFixed(1);
+        document.getElementById('speed-display').textContent = gameSpeed.toFixed(1) + 'x';
+        document.getElementById('high-score-display').textContent = highScore;
+        document.getElementById('new-ball-speed-value').textContent = newBallSpeed;
+        document.getElementById('new-ball-size-value').textContent = newBallSize;
+        
+        // 设置默认物理模式
+        setPhysicsMode('standard');
+        
+        // 窗口大小变化时更新
+        window.addEventListener('resize', function() {
+            if (gameStarted) {
+                // 可以在这里添加调整逻辑
+            }
+        });
     </script>
 </body>
 </html>
